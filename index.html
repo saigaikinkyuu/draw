@@ -30,11 +30,11 @@
 
     #colorPicker {
         position: absolute;
-        top: 10px;
-        left: 50%;
+        top: 0px;
+        left: 99%;
         transform: translateX(-50%);
-        width: 40px;
-        height: 40px;
+        width: 25px;
+        height: 25px;
         border-radius: 50%;
         cursor: pointer;
     }
@@ -43,9 +43,10 @@
 <body>
 
 <div id="canvasContainer">
-    <canvas id="canvas"></canvas>
     <input type="file" accept="image/*" id="imageInput">
+    <button id="clearButton">Clear</button>
     <div id="colorPicker"></div>
+    <canvas id="canvas"></canvas>
 </div>
 
 <script>
@@ -55,6 +56,7 @@
         var context = canvas.getContext('2d');
         var imageInput = document.getElementById('imageInput');
         var colorPicker = document.getElementById('colorPicker');
+        var clearButton = document.getElementById('clearButton');
 
         canvas.width = canvasContainer.offsetWidth;
         canvas.height = canvasContainer.offsetHeight;
@@ -103,6 +105,10 @@
                 currentColor = newColor;
                 colorPicker.style.backgroundColor = newColor;
             }
+        });
+        
+        clearButton.addEventListener('click', function() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
         });
     });
 </script>
