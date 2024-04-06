@@ -29,6 +29,7 @@
 </head>
 <body>
 
+<input type="file" id="imageUpload" accept="image/*">
 <canvas id="canvas"></canvas>
 <button id="clearButton">Clear</button>
 
@@ -37,41 +38,74 @@
         var canvas = document.getElementById('canvas');
         var context = canvas.getContext('2d');
         var clearButton = document.getElementById('clearButton');
+        var imageUpload = document.getElementById('imageUpload');
+        var circles = []; // Array to store drawn circles
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
         var isDrawing = false;
 
-        canvas.addEventListener('touchstart', function(event) {
+        canvas.addEventListener('mousedown', function(event) {
             isDrawing = true;
-            var touch = event.touches[0];
-            var x = touch.clientX - canvas.offsetLeft;
-            var y = touch.clientY - canvas.offsetTop;
-            context.beginPath();
-            context.moveTo(x, y);
+            drawCircle(event.clientX, event.clientY, 'black');
         });
 
-        canvas.addEventListener('touchmove', function(event) {
-            event.preventDefault();
+        canvas.addEventListener('mousemove', function(event) {
             if (isDrawing) {
-                var touch = event.touches[0];
-                var x = touch.clientX - canvas.offsetLeft;
-                var y = touch.clientY - canvas.offsetTop;
-                context.lineTo(x, y);
-                context.strokeStyle = 'black'; // Color of the line
-                context.lineWidth = 5; // Thickness of the line
-                context.stroke();
+                drawCircle(event.clientX, event.clientY, 'black');
             }
         });
 
-        canvas.addEventListener('touchend', function(event) {
+        canvas.addEventListener('mouseup', function(event) {
             isDrawing = false;
         });
 
         clearButton.addEventListener('click', function() {
             context.clearRect(0, 0, canvas.width, canvas.height);
+            circles = [];
         });
+
+        imageUpload.addEventListener('change', function(event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var img = new Image();
+                img.onload = function() {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    context.drawImage(img, 0, 0);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        canvas.addEventListener('click', function(event) {
+            var x = event.clientX;
+            var y = event.clientY;
+            circles.forEach(function(circle) {
+                if (Math.sqrt((circle.x - x) ** 2 + (circle.y - y) ** 2) <= circle.radius) {
+                    circle.color = 'red'; // Change color to red
+                    redrawCircles();
+                }
+            });
+        });
+
+        function drawCircle(x, y, color) {
+            context.beginPath();
+            context.arc(x, y, 10, 0, Math.PI * 2);
+            context.fillStyle = color;
+            context.fill();
+            circles.push({x: x, y: y, radius: 10, color: color});
+        }
+
+        function redrawCircles() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            circles.forEach(function(circle) {
+                drawCircle(circle.x, circle.y, circle.color);
+            });
+        }
     });
 </script>
 
