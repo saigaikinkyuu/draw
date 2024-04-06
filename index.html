@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finger Painting</title>
+<style>
+    #canvas {
+        border: 1px solid black;
+        touch-action: none; /* Disable default touch actions */
+    }
+</style>
+</head>
+<body>
+
+<canvas id="canvas" width="400" height="400"></canvas>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+
+        var isDrawing = false;
+
+        canvas.addEventListener('touchstart', function(event) {
+            isDrawing = true;
+            var touch = event.touches[0];
+            var x = touch.clientX - canvas.offsetLeft;
+            var y = touch.clientY - canvas.offsetTop;
+            context.beginPath();
+            context.moveTo(x, y);
+        });
+
+        canvas.addEventListener('touchmove', function(event) {
+            event.preventDefault();
+            if (isDrawing) {
+                var touch = event.touches[0];
+                var x = touch.clientX - canvas.offsetLeft;
+                var y = touch.clientY - canvas.offsetTop;
+                context.lineTo(x, y);
+                context.strokeStyle = 'black'; // Color of the line
+                context.lineWidth = 5; // Thickness of the line
+                context.stroke();
+            }
+        });
+
+        canvas.addEventListener('touchend', function(event) {
+            isDrawing = false;
+        });
+    });
+</script>
+
+</body>
+</html>
