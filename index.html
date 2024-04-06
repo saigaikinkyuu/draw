@@ -82,8 +82,13 @@
         var colorPicker3 = document.getElementById('colorPicker3');
         var clearButton = document.getElementById('clearButton');
 
-        canvas.width = canvasContainer.offsetWidth;
-        canvas.height = canvasContainer.offsetHeight;
+        // 高解像度キャンバスのサイズを計算する
+        var dpi = window.devicePixelRatio;
+        canvas.width = canvasContainer.offsetWidth * dpi;
+        canvas.height = canvasContainer.offsetHeight * dpi;
+        canvas.style.width = canvasContainer.offsetWidth + 'px';
+        canvas.style.height = canvasContainer.offsetHeight + 'px';
+        context.scale(dpi, dpi); // キャンバスのコンテキストにスケールを適用
 
         var isDrawing = false;
         var currentColor = 'black';
